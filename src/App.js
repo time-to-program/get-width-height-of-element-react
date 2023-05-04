@@ -1,23 +1,36 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useLayoutEffect, useRef, useState } from "react";
 
 function App() {
+  const elementRef = useRef(null);
+  const [elementWidth, setElementWidth] = useState(0);
+  const [elementHeight, setElementHeight] = useState(0);
+
+  useLayoutEffect(() => {
+    function handleResize() {
+      if (elementRef.current) {
+        const width = elementRef.current.offsetWidth;
+        const height = elementRef.current.offsetHeight;
+        setElementWidth(width);
+        setElementHeight(height);
+      }
+    }
+
+    handleResize(); // initial call to get width and height of the element
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [elementRef]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
+    <div>
+      <div className="card" ref={elementRef}>
+        <h3>Get Width and Height</h3>
         <p>
-          Edit <code>src/App.js</code> and save to reload.
+          Width: <strong>{elementWidth}</strong>
         </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+        <p>
+          Height: <strong>{elementHeight}</strong>
+        </p>
+      </div>
     </div>
   );
 }
